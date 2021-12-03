@@ -27,18 +27,19 @@ namespace WordGenerator
         private List<string> _verbSuffixes;
         private List<string> _conjunctions;
 
+        private string _localPath = @"C:\Users\Jeremy\Source\Repos\SandlinCreative\WordGenerator\WordLists";
         private static Random random = new Random();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _nouns = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\Nouns(6801).txt");
-            _verbs = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\Verbs(4953).txt");
-            _adjectiveSuffixes = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\AdjectiveSuffixes(14).txt");
-            _nounSuffixes = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\NounSuffixes(15).txt");
-            _verbSuffixes = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\VerbSuffixes(4).txt");
-            _conjunctions = ImportWordList(@"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists\SubordinatingConjunctions(49).txt");
+            _nouns = ImportWordList(_localPath + @"\Nouns(6801).txt");
+            _verbs = ImportWordList(_localPath + @"\Verbs(4953).txt");
+            _adjectiveSuffixes = ImportWordList(_localPath + @"\AdjectiveSuffixes(14).txt");
+            _nounSuffixes = ImportWordList(_localPath + @"\NounSuffixes(15).txt");
+            _verbSuffixes = ImportWordList(_localPath + @"\VerbSuffixes(4).txt");
+            _conjunctions = ImportWordList(_localPath + @"\SubordinatingConjunctions(49).txt");
         }
 
         private List<string> ImportWordList(string _path)
@@ -49,23 +50,23 @@ namespace WordGenerator
             return wordList;
         }
 
-        private string GetRandomWord(List<string> _list)
+        private string GetRandomWord(List<string> _list, Button sender)
         {
             string word = _list[random.Next(_list.Count)];
+
+            if((string)sender.Content == "(suffix)" || (string)sender.Content == "Adjective Suffix")
+                this.history.Text = word + this.history.Text;
+            else
+                this.history.Text = "\n" + word + this.history.Text;
+
             Clipboard.SetText(word);
             return word;
         }
-
-        private void noun_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nouns);
-
-        private void nSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nounSuffixes);
-
-        private void verb_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbs);
-
-        private void vSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbSuffixes);
-
-        private void aSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_adjectiveSuffixes);
-
-        private void conjunction_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_conjunctions);
+        private void noun_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nouns, (Button)sender);
+        private void nSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nounSuffixes, (Button)sender);
+        private void verb_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbs, (Button)sender);
+        private void vSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbSuffixes, (Button)sender);
+        private void aSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_adjectiveSuffixes, (Button)sender);
+        private void conjunction_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_conjunctions, (Button)sender);
     }
 }
