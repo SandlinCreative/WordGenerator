@@ -26,8 +26,11 @@ namespace WordGenerator
         private List<string> _nounSuffixes;
         private List<string> _verbSuffixes;
         private List<string> _conjunctions;
+        private OutWindow OutputWindow;
 
-        private string _localPath = @"C:\Users\Jeremy\Source\Repos\SandlinCreative\WordGenerator\WordLists";
+
+        //private string _localPath = @"C:\Users\Jeremy\Source\Repos\SandlinCreative\WordGenerator\WordLists";
+        private string _localPath = @"C:\Users\jeremy.knlc\source\repos\WordGenerator\WordLists";
         private static Random random = new Random();
 
         public MainWindow()
@@ -40,6 +43,9 @@ namespace WordGenerator
             _nounSuffixes = ImportWordList(_localPath + @"\NounSuffixes(15).txt");
             _verbSuffixes = ImportWordList(_localPath + @"\VerbSuffixes(4).txt");
             _conjunctions = ImportWordList(_localPath + @"\SubordinatingConjunctions(49).txt");
+
+            
+            
         }
 
         private List<string> ImportWordList(string _path)
@@ -55,18 +61,53 @@ namespace WordGenerator
             string word = _list[random.Next(_list.Count)];
 
             if((string)sender.Content == "(suffix)" || (string)sender.Content == "Adjective Suffix")
-                this.history.Text = word + this.history.Text;
+                OutputWindow.OutBox.Text = word + OutputWindow.OutBox.Text;
             else
-                this.history.Text = "\n" + word + this.history.Text;
+                OutputWindow.OutBox.Text = "\n" + word + OutputWindow.OutBox.Text;
 
             Clipboard.SetText(word);
             return word;
         }
-        private void noun_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nouns, (Button)sender);
-        private void nSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_nounSuffixes, (Button)sender);
-        private void verb_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbs, (Button)sender);
-        private void vSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_verbSuffixes, (Button)sender);
-        private void aSuffix_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_adjectiveSuffixes, (Button)sender);
-        private void conjunction_Click(object sender, RoutedEventArgs e) => output.Text = GetRandomWord(_conjunctions, (Button)sender);
+        private void noun_Click(object sender, RoutedEventArgs e) => GetRandomWord(_nouns, (Button)sender);
+        private void nSuffix_Click(object sender, RoutedEventArgs e) => GetRandomWord(_nounSuffixes, (Button)sender);
+        private void verb_Click(object sender, RoutedEventArgs e) => GetRandomWord(_verbs, (Button)sender);
+        private void vSuffix_Click(object sender, RoutedEventArgs e) => GetRandomWord(_verbSuffixes, (Button)sender);
+        private void aSuffix_Click(object sender, RoutedEventArgs e) => GetRandomWord(_adjectiveSuffixes, (Button)sender);
+        private void conjunction_Click(object sender, RoutedEventArgs e) => GetRandomWord(_conjunctions, (Button)sender);
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            OutputWindow = new OutWindow();
+            OutputWindow.Show();
+            WindowCollection windows = Application.Current.Windows;
+        }
+    }
+
+
+
+
+    public class OutWindow : Window
+    {
+        public Grid TheGrid { get; set; }
+        public TextBox OutBox { get; set; }
+        public OutWindow()
+        {
+            WindowStyle = WindowStyle.ToolWindow;
+            Title = "Output";
+            Width = 320;
+            Height = 600;
+            Margin = new Thickness(0);
+            FontFamily = new System.Windows.Media.FontFamily("Corbel");
+            Top = Application.Current.MainWindow.Top;
+            Left = Application.Current.MainWindow.Left - this.Width * 1.03;
+
+            TheGrid = new Grid();
+            OutBox = new TextBox();
+            OutBox.Margin = new Thickness(8);
+            OutBox.BorderThickness = new Thickness(0);
+            OutBox.FontSize = 24;
+            TheGrid.Children.Add(OutBox);
+            this.AddChild(TheGrid);
+        }
     }
 }
